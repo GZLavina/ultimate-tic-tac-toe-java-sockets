@@ -120,7 +120,7 @@ public class Server {
 		// Coordinate validation method (returns null if not between A1 to C3)
 		public int[] validateCell(String cell) {
 			try {
-				char[] indexes = cell.toCharArray();
+				char[] indexes = cell.toUpperCase().toCharArray();
 				int[] number_indexes = new int[2];
 				number_indexes[0] = indexes[0] - 65;
 				number_indexes[1] = indexes[1] - 49;

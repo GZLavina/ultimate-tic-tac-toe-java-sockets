@@ -43,7 +43,12 @@ public class Client {
                                     out.writeBytes(userInputStr + '\n');
                                     out.flush();
                             } else if (serverResponse.startsWith(Constants.GAME_ENDED)) {
-                                    System.out.println("The game is completed! Winner: " + serverResponse.split(Constants.SEPARATOR)[1]);
+                                    char winner = (serverResponse.split(Constants.SEPARATOR))[1].charAt(0);
+                                    if (winner == Constants.TIE) {
+                                            System.out.println("The game ended in a draw!");
+                                    } else {
+                                            System.out.println("Player " + winner + " wins the game!");
+                                    }
                                     break;
                             } else {
                                     System.out.println(serverResponse);
