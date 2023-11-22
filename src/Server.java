@@ -73,26 +73,30 @@ public class Server {
 						System.out.println("Player " + symbol + " to move.");
 						System.out.println("Current game state:");
 						System.out.println(game.getBoardView());
-						sendMessageToClient(Constants.GAME_STATE + Constants.SEPARATOR + game.getBoardView());
+						sendMessageToClient(Constants.GAME_STATE + '\n' + game.getBoardView());
 						if (game.currentGame == null) {
+							// if game.currentGame is null, player must select a new game to play in
 							System.out.println("Player " + symbol + " must pick a game.");
 							gameSelectionLoop();
 						}
 						moveValidationLoop();
+						System.out.println("Player " + symbol + " completed their move.");
 						if (game.winner != Constants.NO_PLAYER) {
+							// if game.winner != '-', the game has ended
+							System.out.println("Player " + symbol + " wins the game!");
 							sendMessageToClient(Constants.GAME_ENDED + Constants.SEPARATOR + game.winner);
-							sleep(1000);
 							break;
 						} else {
+							// allow next player to make a move
 							playerToMove = symbol == Constants.PLAYER_X ? Constants.PLAYER_O : Constants.PLAYER_X;
 						}
-						System.out.println("Player " + symbol + " wins the game!");
 					}
 					if (game.winner != Constants.NO_PLAYER) {
+						// check if game has ended during other player's turn
 						sendMessageToClient(Constants.GAME_ENDED + Constants.SEPARATOR + game.winner);
-						sleep(1000);
 						break;
 					} else {
+						// 500ms until next check to see if turn changed
 						sleep(500);
 					}
 				}
@@ -102,11 +106,13 @@ public class Server {
 			}
 		}
 
+		// Add linebreak to message and flush
 		public void sendMessageToClient(String message) throws IOException {
 			out.writeBytes(message + '\n');
 			out.flush();
 		}
 
+		// Loops until player selects a valid game to play in
 		public void gameSelectionLoop() throws IOException {
 			int[] cell = cellValidationLoop(Constants.CHOOSE_GAME);
 			boolean legalPick = game.pickGame(cell);
@@ -117,7 +123,7 @@ public class Server {
 			}
 		}
 
-		// Coordinate validation method (returns null if not between A1 to C3)
+		// Coordinates validation method (returns null if not between A1 to C3)
 		public int[] validateCell(String cell) {
 			try {
 				char[] indexes = cell.toUpperCase().toCharArray();
@@ -134,7 +140,7 @@ public class Server {
 			}
 		}
 
-		// Loops coordinate validation while selection is invalid
+		// Returns a valid cell as [0, 0] up to [2, 2]
 		public int[] cellValidationLoop(String message) throws IOException {
 			sendMessageToClient(message);
 			int[] cell = validateCell(in.readLine());

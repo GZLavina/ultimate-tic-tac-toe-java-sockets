@@ -18,7 +18,6 @@ public class Client {
                     BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 
                     String serverResponse;
-                    String userInputStr;
 
                     while (true) {
                             serverResponse = in.readLine();
@@ -27,21 +26,16 @@ public class Client {
                                     System.out.println("Invalid input!");
                             } else if (serverResponse.equals(Constants.MAKE_MOVE)) {
                                     System.out.println("Enter your move (input format: <Row:Letter><Column:Number>):");
-                                    userInputStr = userInput.readLine();
-                                    out.writeBytes(userInputStr + '\n');
-                                    out.flush();
+                                    sendMessageToServer(out, userInput.readLine());
                             } else if (serverResponse.equals(Constants.GAME_STARTED)) {
                                     System.out.println("Game Started!");
                             } else if (serverResponse.equals(Constants.TEST_CONNECTION)) {
                                     System.out.println("Connection working!");
-                            } else if (serverResponse.startsWith(Constants.GAME_STATE)) {
+                            } else if (serverResponse.equals(Constants.GAME_STATE)) {
                                     System.out.println("Current game state:");
-                                    System.out.println(serverResponse.split(Constants.SEPARATOR)[1]);
                             } else if (serverResponse.equals(Constants.CHOOSE_GAME)) {
                                     System.out.println("Pick a game to play in (input format: <Row:Letter><Column:Number>):");
-                                    userInputStr = userInput.readLine();
-                                    out.writeBytes(userInputStr + '\n');
-                                    out.flush();
+                                    sendMessageToServer(out, userInput.readLine());
                             } else if (serverResponse.startsWith(Constants.GAME_ENDED)) {
                                     char winner = (serverResponse.split(Constants.SEPARATOR))[1].charAt(0);
                                     if (winner == Constants.TIE) {
@@ -60,6 +54,11 @@ public class Client {
             } catch (IOException e) {
                     e.printStackTrace();
             }
+    }
+
+    private void sendMessageToServer(DataOutputStream out, String message) throws IOException {
+            out.writeBytes(message + '\n');
+            out.flush();
     }
 
 }

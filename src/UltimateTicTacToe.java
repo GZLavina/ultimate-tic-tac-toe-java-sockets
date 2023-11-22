@@ -146,7 +146,7 @@ public class UltimateTicTacToe {
 						str.append(game.matrix[j][l]).append(' ');
 					}
 					if (k < 2) {
-						str.append('|').append(' ');
+						str.append("| ");
 					}
 				}
 				str.append('\n');
